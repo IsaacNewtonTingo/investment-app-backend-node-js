@@ -25,17 +25,25 @@ let transporter = nodemailer.createTransport({
 });
 
 router.post("/signup", (req, res) => {
-  let { name, email, password } = req.body;
-  name = name.trim();
+  let { firstName, lastName, email, phoneNumber, password } = req.body;
+  firstName = firstName.trim();
+  lastName = lastName.trim();
   email = email.trim();
+  phoneNumber = phoneNumber.trim();
   password = password.trim();
 
-  if (name == "" || email == "" || password == "") {
+  if (
+    firstName == "" ||
+    lastName == "" ||
+    email == "" ||
+    phoneNumber == "" ||
+    password == ""
+  ) {
     res.json({
       status: "Failed",
       message: "All fields are required",
     });
-  } else if (!/^[a-zA-Z ]*$/.test(name)) {
+  } else if (!/^[a-zA-Z ]*$/.test(firstName, lastName)) {
     res.json({
       status: "Failed",
       message: "Invalid name format",
@@ -64,8 +72,10 @@ router.post("/signup", (req, res) => {
             .hash(password, salt)
             .then((hashedPassword) => {
               const newUser = new User({
-                name,
+                firstName,
+                lastName,
                 email,
+                phoneNumber,
                 password: hashedPassword,
                 verified: false,
               });
