@@ -44,7 +44,7 @@ router.post("/reg-fee-payment", (req, res) => {
             //check if referral code is valid
             ReferralCode.find({ referralCode })
               .then((result) => {
-                if (result.length) {
+                if (result.length > 0) {
                   //Code is valid
                   //calculate the discount
 
@@ -74,7 +74,11 @@ router.post("/reg-fee-payment", (req, res) => {
                       if (error) {
                         console.log(error);
                       } else {
-                        res.status(200).json(body);
+                        res.json({
+                          status: "Success",
+                          message:
+                            "Your request is being processed. {'\n'}Wait for M-Pesa prompt on your phone.",
+                        });
                       }
                     }
                   );
@@ -122,7 +126,11 @@ router.post("/reg-fee-payment", (req, res) => {
                 if (error) {
                   console.log(error);
                 } else {
-                  res.status(200).json(body);
+                  res.json({
+                    status: "Success",
+                    message:
+                      "Your request is being processed. Wait for M-Pesa prompt on your phone.",
+                  });
                 }
               }
             );
