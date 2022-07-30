@@ -9,6 +9,7 @@ const path = require("path");
 const User = require("../models/user");
 const UserVerification = require("../models/user-verification");
 const PasswordReset = require("../models/password-reset");
+const RegFee = require("../models/reg-fee-payments");
 
 // const development = "http://localhost:3000/";
 // const production = "https://full-auth-server-node-jss.herokuapp.com/";
@@ -272,13 +273,40 @@ router.post("/signin", (req, res) => {
             const hashedPassword = data[0].password;
             bcrypt
               .compare(password, hashedPassword)
-              .then((result) => {
+              .then(async (result) => {
                 if (result) {
-                  res.json({
-                    status: "Success",
-                    message: "Signin successfull",
-                    data: data,
-                  });
+                  const phoneNumber = data[0].phoneNumber;
+
+                  //check if user records exist in registration fee payment
+
+                  await RegFee.find({ phoneNumber })
+                    .then((result) => {
+                      if (result.length > 0) {
+                        //Exists, redirect to home screen
+                        res.json({
+                          status: "Success",
+                          message:
+                            "Signin successfull. You had already paid registration fee",
+                          data: data,
+                        });
+                      } else {
+                        //Doesn't exist, redirect to reg fee payment
+
+                        res.json({
+                          status: "Pending",
+                          message: "Pay registration fee",
+                          data: data,
+                        });
+                      }
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      res.json({
+                        status: "Failed",
+                        message:
+                          "Error occured while checking registration fee details.",
+                      });
+                    });
                 } else {
                   res.json({
                     status: "Failed",
@@ -287,6 +315,7 @@ router.post("/signin", (req, res) => {
                 }
               })
               .catch((err) => {
+                console.log(err);
                 res.json({
                   status: "Failed",
                   message: "Error occured while comparing passwords",
