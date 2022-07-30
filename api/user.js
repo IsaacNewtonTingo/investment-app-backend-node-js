@@ -14,7 +14,7 @@ const PasswordReset = require("../models/password-reset");
 // const production = "https://full-auth-server-node-jss.herokuapp.com/";
 // const currentUrl = process.env.NODE_ENV ? development : production;
 
-const currentUrl = "https://full-auth-server-node-jss.herokuapp.com/";
+const currentUrl = "https://investment-app-backend.herokuapp.com/";
 
 let transporter = nodemailer.createTransport({
   service: "gmail",
@@ -504,6 +504,61 @@ router.post("/reset-password", (req, res) => {
         message: "Checking for checking reset record failed",
       });
     });
+});
+
+router.post("/update-phone-number", (req, res) => {
+  const { phoneNumberUsed, userID } = req.body;
+
+  if (!phoneNumberUsed) {
+    res.json({
+      status: "Failed",
+      message: "Please enter a phone number",
+    });
+  } else if (!userID) {
+    res.json({
+      status: "Failed",
+      message: "Invalid user ID",
+    });
+  } else {
+    User.find({ userID })
+      .then((response) => {
+        if (response.length > 0) {
+          //user found
+          User.updateOne(
+            {
+              _id: userID,
+            },
+            { phoneNumber: phoneNumberUsed }
+          )
+            .then((response) => {
+              res.json({
+                status: "Success",
+                message: "Phone number updated successfully",
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+              res.json({
+                status: "Failed",
+                message: "Error occured while updating phone number",
+              });
+            });
+        } else {
+          //user not found
+          res.json({
+            status: "Failed",
+            message: "No user records found",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        res.json({
+          status: "Failed",
+          message: "Error occured while validating user records",
+        });
+      });
+  }
 });
 
 module.exports = router;

@@ -32,7 +32,7 @@ router.post("/reg-fee-payment", (req, res) => {
     User.find({ userID })
       .then((result) => {
         //User not found
-        if (!result.length) {
+        if (result.length < 0) {
           res.json({
             status: "Failed",
             message: "No user records found. Please signup ",
@@ -54,7 +54,7 @@ router.post("/reg-fee-payment", (req, res) => {
 
                   //perform stk push
                   const url =
-                    "https://tinypesa.com/api/v1/express/initialize?https://766f-105-163-1-68.in.ngrok.io/payments/mpesa-callback";
+                    "https://tinypesa.com/api/v1/express/initialize?https://investment-app-backend.herokuapp.com/payments/mpesa-callback";
                   request(
                     {
                       url: url,
@@ -102,7 +102,7 @@ router.post("/reg-fee-payment", (req, res) => {
 
             //perform stk push
             const url =
-              "https://tinypesa.com/api/v1/express/initialize?https://766f-105-163-1-68.in.ngrok.io/payments/mpesa-callback";
+              "https://tinypesa.com/api/v1/express/initialize?https://investment-app-backend.herokuapp.com/payments/mpesa-callback";
             request(
               {
                 url: url,
@@ -148,7 +148,7 @@ router.post("/mpesa-callback", (req, res) => {
     const phoneNumberUsed = req.body.Body.stkCallback.Msisdn;
     const amount = req.body.Body.stkCallback.Amount;
 
-    savePaymentToDB({ phoneNumberUsed, amount }, res);
+    savePaymentToDB({ phoneNumberUsed, amount });
   } else {
     //Payment unsuccessfull
     console.log("Cacelled");
@@ -160,7 +160,7 @@ router.post("/mpesa-callback", (req, res) => {
 });
 
 //save reg fee data
-const savePaymentToDB = async ({ amount, phoneNumberUsed }, res) => {
+const savePaymentToDB = async ({ amount, phoneNumberUsed }) => {
   const newRegFee = new RegFee({
     datePaid: Date.now(),
     amountPaid: amount,
@@ -171,17 +171,25 @@ const savePaymentToDB = async ({ amount, phoneNumberUsed }, res) => {
     .save()
     .then((response) => {
       console.log(response);
-      res.json({
-        status: "Success",
-        message: "Payment details successfully saved",
-      });
     })
     .catch((err) => {
       console.log(err);
-      res.json({
-        status: "Failed",
-        message: "Error occured while saving payment detials",
-      });
+    });
+
+  const mailOptions = {
+    from: process.env.AUTH_EMAIL,
+    to: "newtontingo@gmail.com",
+    subject: "Registration fee payment alert",
+    html: `<p><strong>${phoneNumberUsed}</strong> has paid <strong>KSH. ${amount}</strong> as registration fee in your investment mobile application</p>`,
+  };
+
+  await transporter
+    .sendMail(mailOptions)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 
