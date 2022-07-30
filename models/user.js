@@ -8,6 +8,7 @@ const UserSchema = new Schema({
   phoneNumber: Number,
   password: String,
   verified: Boolean,
+  regFeePaid: Boolean,
 });
 
 const User = mongoose.model("User", UserSchema);

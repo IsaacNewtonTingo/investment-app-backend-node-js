@@ -14,7 +14,7 @@ const PasswordReset = require("../models/password-reset");
 // const production = "https://full-auth-server-node-jss.herokuapp.com/";
 // const currentUrl = process.env.NODE_ENV ? development : production;
 
-const currentUrl = "http://localhost:3000/";
+const currentUrl = "https://full-auth-server-node-jss.herokuapp.com/";
 
 let transporter = nodemailer.createTransport({
   service: "gmail",
@@ -24,7 +24,7 @@ let transporter = nodemailer.createTransport({
   },
 });
 
-router.post("/signup", (req, res) => {
+router.post("/signup", async (req, res) => {
   let { firstName, lastName, email, phoneNumber, password } = req.body;
   firstName = firstName.trim();
   lastName = lastName.trim();
@@ -59,12 +59,12 @@ router.post("/signup", (req, res) => {
       message: "Password is too short",
     });
   } else {
-    User.find({ email })
+    await User.find({ $or: [{ email }, { phoneNumber }] })
       .then((result) => {
         if (result.length) {
           res.json({
             status: "Failed",
-            message: "User with the given email already exists",
+            message: "User with the given email/phone number already exists",
           });
         } else {
           const salt = 10;
@@ -103,7 +103,7 @@ router.post("/signup", (req, res) => {
       .catch((err) => {
         res.json({
           status: "Failed",
-          message: "Erro occured when checking email",
+          message: "Erro occured when checking email and phoneNumber",
         });
       });
   }
@@ -347,9 +347,10 @@ const sendResetEmail = ({ _id, email }, redirectUrl, res) => {
         from: process.env.AUTH_EMAIL,
         to: email,
         subject: "Reset your password",
-        html: `<p>You have initiated a reset password process.</p><p>Link <b>expires in 60 minutes.</b></p><p>Press <a href=${
-          redirectUrl + "/" + _id + "/" + resetString
-        }> here </a>to proceed </p>`,
+        // html: `<p>You have initiated a reset password process.</p><p>Link <b>expires in 60 minutes.</b></p><p>Press <a href=${
+        //   redirectUrl + "/" + _id + "/" + resetString
+        // }> here </a>to proceed </p>`,
+        html: `<p>You have initiated a reset password process.</p><p>Link <b>expires in 60 minutes</p> <p>Here is your secret code:</p><p><strong>${resetString}</strong><br/>Enter the code in the app, with your new password.</p>`,
       };
 
       const saltRounds = 10;
@@ -371,7 +372,7 @@ const sendResetEmail = ({ _id, email }, redirectUrl, res) => {
                 .then(() => {
                   res.json({
                     status: "Pending",
-                    message: "Password reset email sent",
+                    message: _id,
                   });
                 })
                 .catch((err) => {
