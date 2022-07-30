@@ -129,7 +129,7 @@ router.post("/reg-fee-payment", (req, res) => {
                   res.json({
                     status: "Success",
                     message:
-                      "Your request is being processed. Wait for M-Pesa prompt on your phone.",
+                      "Your request is being processed. Wait for M-Pesa.",
                   });
                 }
               }
