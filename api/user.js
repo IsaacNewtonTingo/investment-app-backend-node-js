@@ -79,6 +79,8 @@ router.post("/signup", async (req, res) => {
                 phoneNumber,
                 password: hashedPassword,
                 verified: false,
+                accountBalance: 0,
+                regFeePaid: false,
               });
               newUser
                 .save()

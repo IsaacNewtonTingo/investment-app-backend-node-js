@@ -32,7 +32,7 @@ router.post("/reg-fee-payment", (req, res) => {
     User.find({ userID })
       .then((result) => {
         //User not found
-        if (result.length < 0) {
+        if (result.length <= 0) {
           res.json({
             status: "Failed",
             message: "No user records found. Please signup ",

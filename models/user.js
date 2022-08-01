@@ -9,6 +9,7 @@ const UserSchema = new Schema({
   password: String,
   verified: Boolean,
   regFeePaid: Boolean,
+  accountBalance: Number,
 });
 
 const User = mongoose.model("User", UserSchema);

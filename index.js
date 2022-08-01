@@ -17,7 +17,8 @@ app.listen(port, () => {
 const UserRouter = require("./api/user");
 const RegFeePaymentRouter = require("./api/regFeePayment");
 const ReferralCodeRouter = require("./api/referral-code");
+const InvestmentPaymentRouter = require("./api/investment-payment");
 
 app.use("/user", UserRouter);
-app.use("/payments", RegFeePaymentRouter);
+app.use("/payments", RegFeePaymentRouter, InvestmentPaymentRouter);
 app.use("/referrals", ReferralCodeRouter);
