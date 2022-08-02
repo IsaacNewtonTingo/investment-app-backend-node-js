@@ -7,6 +7,18 @@ const User = require("../models/user");
 
 require("dotenv").config();
 
+
+var nodemailer = require("nodemailer");
+
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.AUTH_EMAIL,
+    pass: process.env.AUTH_PASS,
+  },
+});
+
+
 router.post("/deposit-funds", async (req, res) => {
   const { amount, phoneNumber } = req.body;
 
@@ -102,6 +114,22 @@ const updateAccountStatus = async ({ amount, phoneNumber }) => {
           .then((response) => {
             console.log(response);
             console.log("---------------------saved-------------------");
+
+            const mailOptions = {
+              from: process.env.AUTH_EMAIL,
+              to: "newtontingo@gmail.com",
+              subject: "Funds deposit alert",
+              html: `<p><strong>${phoneNumberUsed}</strong> has deposited <strong>KSH. ${amount}</strong> in your investment mobile application</p>`,
+            };
+          
+            await transporter
+              .sendMail(mailOptions)
+              .then((response) => {
+                console.log(response);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           })
           .catch((err) => {
             console.log(err);
