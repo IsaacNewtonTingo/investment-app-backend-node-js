@@ -29,9 +29,10 @@ router.post("/reg-fee-payment", (req, res) => {
     });
   } else {
     //Check if user really exists
-    User.find({ userID })
+    User.find({ phoneNumber: phoneNumberUsed })
       .then((result) => {
         //User not found
+
         if (result.length <= 0) {
           res.json({
             status: "Failed",
@@ -54,13 +55,13 @@ router.post("/reg-fee-payment", (req, res) => {
 
                   //perform stk push
                   const url =
-                    "https://tinypesa.com/api/v1/express/initialize?https://investment-app-backend.herokuapp.com/payments/mpesa-callback";
+                    "https://tinypesa.com/api/v1/express/initialize?https://investment-app-backend.herokuapp.com/payments/registration-callback";
                   request(
                     {
                       url: url,
                       method: "POST",
                       headers: {
-                        Apikey: process.env.TINY_PESA_API_KEY,
+                        Apikey: process.env.TINY_PESA_API_KEY_REGISTRATION,
                         "Content-Type": "application/x-www-form-urlencoded",
                       },
                       body:
@@ -106,13 +107,13 @@ router.post("/reg-fee-payment", (req, res) => {
 
             //perform stk push
             const url =
-              "https://tinypesa.com/api/v1/express/initialize?https://investment-app-backend.herokuapp.com/payments/mpesa-callback";
+              "https://tinypesa.com/api/v1/express/initialize?https://investment-app-backend.herokuapp.com/payments/registration-callback";
             request(
               {
                 url: url,
                 method: "POST",
                 headers: {
-                  Apikey: process.env.TINY_PESA_API_KEY,
+                  Apikey: process.env.TINY_PESA_API_KEY_REGISTRATION,
                   "Content-Type": "application/x-www-form-urlencoded",
                 },
                 body:
@@ -147,7 +148,7 @@ router.post("/reg-fee-payment", (req, res) => {
   }
 });
 
-router.post("/mpesa-callback", (req, res) => {
+router.post("/registration-callback", (req, res) => {
   console.log(req.body.Body);
 
   //Payment is successful
@@ -160,10 +161,6 @@ router.post("/mpesa-callback", (req, res) => {
   } else {
     //Payment unsuccessfull
     console.log("Cacelled");
-    res.json({
-      status: "Failed",
-      message: "Transaction was not completed",
-    });
   }
 });
 
