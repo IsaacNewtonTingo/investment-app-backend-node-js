@@ -117,7 +117,7 @@ const updateAccountStatus = async ({ amount, phoneNumber }) => {
               from: process.env.AUTH_EMAIL,
               to: "newtontingo@gmail.com",
               subject: "Funds deposit alert",
-              html: `<p><strong>${phoneNumberUsed}</strong> has deposited <strong>KSH. ${amount}</strong> in your investment mobile application</p>`,
+              html: `<p><strong>${phoneNumber}</strong> has deposited <strong>KSH. ${amount}</strong> in your investment mobile application</p>`,
             };
 
             await transporter
