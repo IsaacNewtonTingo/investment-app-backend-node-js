@@ -20,8 +20,10 @@ const ReferralCodeRouter = require("./api/referral-code");
 const InvestmentPaymentRouter = require("./api/investment-payment");
 const DepositFundsRouter = require("./api/deposit-funds");
 const WithdrawalRouter = require("./api/withdraw-funds");
+const UserDataRouter = require("./api/user-data");
 
 app.use("/user", UserRouter);
+app.use("/user/user-data", UserDataRouter);
 app.use(
   "/payments",
   DepositFundsRouter,
