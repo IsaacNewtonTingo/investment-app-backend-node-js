@@ -5,30 +5,37 @@ const router = express.Router();
 router.get("/account-balance", async (req, res) => {
   const { phoneNumber } = req.body;
 
-  await User.find({ phoneNumber })
-    .then((response) => {
-      if (response.length > 0) {
-        //user exists
-        res.json({
-          status: "Success",
-          message: "User records found",
-          data: response,
-        });
-      } else {
-        //user not found
+  if (!phoneNumber) {
+    res.json({
+      status: "Failed",
+      message: "Phone number is missing",
+    });
+  } else {
+    await User.find({ phoneNumber })
+      .then((response) => {
+        if (response.length > 0) {
+          //user exists
+          res.json({
+            status: "Success",
+            message: "User records found",
+            data: response,
+          });
+        } else {
+          //user not found
+          res.json({
+            status: "Failed",
+            message: "No user records found",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         res.json({
           status: "Failed",
-          message: "No user records found",
+          message: "Error occured while checking user records",
         });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({
-        status: "Failed",
-        message: "Error occured while checking user records",
       });
-    });
+  }
 });
 
 module.exports = router;
