@@ -8,6 +8,7 @@ const User = require("../models/user");
 require("dotenv").config();
 
 var nodemailer = require("nodemailer");
+const Deposit = require("../models/deposits");
 
 let transporter = nodemailer.createTransport({
   service: "gmail",
@@ -128,6 +129,21 @@ const updateAccountStatus = async ({ amount, phoneNumber }) => {
               .catch((err) => {
                 console.log(err);
               });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+
+        const newDeposit = Deposit({
+          phoneNumber: phoneNumber,
+          amountDeposited: amount,
+          dateDeposited: Date.now(),
+        });
+
+        await newDeposit
+          .save()
+          .then((response) => {
+            console.log(response);
           })
           .catch((err) => {
             console.log(err);
