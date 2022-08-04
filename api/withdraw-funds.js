@@ -39,8 +39,7 @@ router.post("/withdraw-funds", async (req, res) => {
               .then(() => {
                 res.json({
                   status: "Success",
-                  message:
-                    "Your withdrawal request has been recieved and will be processed in the next 5-7Days",
+                  message: "Request will be processed in the next 5-7Days",
                 });
               })
               .catch((err) => {
