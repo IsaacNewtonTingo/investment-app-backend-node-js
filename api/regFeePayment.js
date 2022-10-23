@@ -61,7 +61,7 @@ router.post("/reg-fee-payment", (req, res) => {
                       url: url,
                       method: "POST",
                       headers: {
-                        Apikey: process.env.TINY_PESA_API_KEY_REGISTRATION,
+                        Apikey: process.env.NEWTON_API_KEY,
                         "Content-Type": "application/x-www-form-urlencoded",
                       },
                       body:

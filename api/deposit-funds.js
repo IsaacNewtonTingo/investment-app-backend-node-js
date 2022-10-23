@@ -43,7 +43,7 @@ router.post("/deposit-funds", async (req, res) => {
               url: url,
               method: "POST",
               headers: {
-                Apikey: process.env.TINY_PESA_API_KEY_DEPOSIT,
+                Apikey: process.env.APE_30_API_KEY,
                 "Content-Type": "application/x-www-form-urlencoded",
               },
               body:
