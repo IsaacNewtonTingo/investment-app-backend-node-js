@@ -21,6 +21,7 @@ const InvestmentPaymentRouter = require("./api/investment-payment");
 const DepositFundsRouter = require("./api/deposit-funds");
 const WithdrawalRouter = require("./api/withdraw-funds");
 const UserDataRouter = require("./api/user-data");
+const BirthdayGiftEmailDeliveryRouter = require("./api/email-delivery");
 
 app.use("/user", UserRouter);
 app.use("/user/user-data", UserDataRouter);
@@ -32,3 +33,4 @@ app.use(
   WithdrawalRouter
 );
 app.use("/referrals", ReferralCodeRouter);
+app.use("/birthday-gift-email", BirthdayGiftEmailDeliveryRouter);

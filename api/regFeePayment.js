@@ -22,7 +22,7 @@ router.post("/reg-fee-payment", (req, res) => {
   let { userID, phoneNumberUsed, referralCode } = req.body;
 
   //check if data is received
-  if (userID == "" || phoneNumberUsed == "") {
+  if (!userID || !phoneNumberUsed) {
     res.json({
       status: "Failed",
       message: "All fields are required",
